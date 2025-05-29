@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI自動化求職推播機器人</title>
+    <meta name="description" content="24/7 自動搜尋職缺，智能匹配推薦，即時通知推播 - 專為台灣求職者設計">
+    
+    <!-- PWA支援 -->
+    <link rel="manifest" href="data:application/json,{%22name%22:%22AI求職機器人%22,%22short_name%22:%22求職Bot%22,%22display%22:%22standalone%22,%22theme_color%22:%22%233B82F6%22}">
+    <meta name="theme-color" content="#3B82F6">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .status-banner {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #10b981;
+            background-color: #d1fae5;
+            color: #047857;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-banner.active {
+            display: flex;
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+            background: white;
+        }
+
+        .tab:hover {
+            color: #374151;
+        }
+
+        .tab-badge {
+            margin-left: 8px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-content {
+            padding: 24px;
+        }
+
+        .form-section {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .form-section h3 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select {
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .tag-remove {
+            margin-left: 8px;
+            cursor: pointer;
+            color: #1e40af;
+            font-weight: bold;
+        }
+
+        .tag-remove:hover {
+            color: #1e3a8a;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .automation-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .status-indicator {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .status-inactive {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slider {
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input {
+            margin-right: 8px;
+        }
+
+        .job-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s;
+        }
+
+        .job-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .job-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .job-company {
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .match-score {
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .match-high {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .match-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .match-low {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .job-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .job-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .job-tag {
+            padding: 2px 8px;
+            background: #f3f4f6;
+            color: #374151;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .job-actions .btn {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #6b7280;
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            color: #d1d5db;
+        }
+
+        .notification-item {
+            border-left: 4px solid #2563eb;
+            background: #eff6ff;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 12px;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .notification-title {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .notification-message {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+            padding: 24px;
+            background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+            border-radius: 12px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 8px;
+        }
+
+        .feature-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .feature-desc {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .region-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .region-btn {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .region-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .region-btn:hover {
+            border-color: #3b82f6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .job-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .job-details {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .automation-controls {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+        }
+
+        .loading {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🤖 AI自動化求職推播機器人</h1>
+            <p>24/7 自動搜尋 • 智能匹配 • 即時推播</p>
+            
+            <div class="status-banner" id="statusBanner">
+                <div class="pulse"></div>
+                機器人正在運行中，將自動為您搜尋合適的工作機會
+            </div>
+        </header>
+
+        <div class="main-card">
+            <nav class="tabs">
+                <button class="tab active" data-tab="profile">
+                    👤 個人資料
+                </button>
+                <button class="tab" data-tab="search">
+                    🎯 搜尋設定
+                </button>
+                <button class="tab" data-tab="automation">
+                    ⚡ 自動化
+                </button>
+                <button class="tab" data-tab="jobs">
+                    💼 推薦工作
+                    <span class="tab-badge" id="jobsBadge" style="display: none;">0</span>
+                </button>
+                <button class="tab" data-tab="notifications">
+                    🔔 通知
+                    <span class="tab-badge" id="notificationsBadge" style="display: none;">0</span>
+                </button>
+            </nav>
+
+            <div class="tab-content">
+                <!-- 個人資料頁面 -->
+                <div id="profile-tab" class="tab-panel">
+                    <div class="form-section">
+                        <h3>👤 基本資料</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">姓名</label>
+                                <input type="text" class="form-input" id="userName" value="張小明">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-input" id="userEmail" value="example@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">聯絡電話</label>
+                                <input type="tel" class="form-input" id="userPhone" value="0912-345-678">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">所在地點</label>
+                                <input type="text" class="form-input" id="userLocation" value="台北市">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">期望職稱</label>
+                                <input type="text" class="form-input" id="userTitle" value="軟體工程師">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">工作經驗</label>
+                                <select class="form-select" id="userExperience">
+                                    <option value="新鮮人">新鮮人</option>
+                                    <option value="1-3年">1-3年</option>
+                                    <option value="3-5年" selected>3-5年</option>
+                                    <option value="5-10年">5-10年</option>
+                                    <option value="10年以上">10年以上</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">技能標籤</label>
+                            <div class="tags-container" id="skillsTags">
+                                <span class="tag">JavaScript <span class="tag-remove" onclick="removeSkill('JavaScript')">×</span></span>
+                                <span class="tag">React <span class="tag-remove" onclick="removeSkill('React')">×</span></span>
+                                <span class="tag">Node.js <span class="tag-remove" onclick="removeSkill('Node.js')">×</span></span>
+                                <span class="tag">Python <span class="tag-remove" onclick="removeSkill('Python')">×</span></span>
+                            </div>
+                            <input type="text" class="form-input" id="skillInput" placeholder="輸入技能後按Enter" onkeypress="addSkill(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 搜尋設定頁面 -->
+                <div id="search-tab" class="tab-panel" style="display: none;">
+                    <div class="form-section">
+                        <h3>🎯 搜尋偏好設定</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">關鍵字搜尋</label>
+                            <div class="tags-container" id="keywordsTags">
+                                <span class="tag">React 開發 <span class="tag-remove" onclick="removeKeyword('React 開發')">×</span></span>
+                                <span class="tag">前端工程師 <span class="tag-remove" onclick="removeKeyword('前端工程師')">×</span></span>
+                                <span class="tag">JavaScript <span class="tag-remove" onclick="removeKeyword('JavaScript')">×</span></span>
+                            </div>
+                            <input type="text" class="form-input" id="keywordInput" placeholder="輸入關鍵字後按Enter" onkeypress="addKeyword(event)">
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">最低薪資</label>
+                                <input type="number" class="form-input" id="salaryMin" value="60000">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">最高薪資</label>
+                                <input type="number" class="form-input" id="salaryMax" value="120000">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">偏好地點</label>
+                            <div class="tags-container" id="locationsTags">
+                                <span class="tag">台北 <span class="tag-remove" onclick="removeLocation('台北')">×</span></span>
+                                <span class="tag">新竹 <span class="tag-remove" onclick="removeLocation('新竹')">×</span></span>
+                                <span class="tag">遠端 <span class="tag-remove" onclick="removeLocation('遠端')">×</span></span>
+                            </div>
+                            <input type="text" class="form-input" id="locationInput" placeholder="輸入地點後按Enter" onkeypress="addLocation(event)">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">搜尋區域偏好</label>
+                            <div class="region-buttons">
+                                <button class="region-btn active" data-region="all">全部區域</button>
+                                <button class="region-btn" data-region="taiwan">台灣本地</button>
+                                <button class="region-btn" data-region="asia">亞洲地區</button>
+                                <button class="region-btn" data-region="global">全球機會</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 自動化設定頁面 -->
+                <div id="automation-tab" class="tab-panel" style="display: none;">
+                    <div class="form-section">
+                        <div class="automation-controls">
+                            <div>
+                                <h3>⚡ 自動化設定</h3>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <span class="status-indicator" id="botStatus">已停止</span>
+                                <button class="btn btn-success" id="startBot" onclick="startAutomation()">
+                                    ▶️ 啟動機器人
+                                </button>
+                                <button class="btn btn-danger" id="stopBot" onclick="stopAutomation()" style="display: none;">
+                                    ⏸️ 停止機器人
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">搜尋頻率</label>
+                                <select class="form-select" id="searchFrequency">
+                                    <option value="hourly">每小時</option>
+                                    <option value="daily" selected>每日</option>
+                                    <option value="weekly">每週</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">執行時間</label>
+                                <input type="time" class="form-input" id="executionTime" value="09:00">
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">最低匹配分數</label>
+                                <input type="range" class="slider" id="matchScore" min="50" max="100" value="75" onchange="updateMatchScore()">
+                                <div class="slider-value" id="matchScoreValue">75%</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">每日最大推播數</label>
+                                <input type="number" class="form-input" id="maxJobs" min="1" max="50" value="10">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">通知設定</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="emailNotif" checked> Email 通知
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="pushNotif" checked> 瀏覽器推播
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" id="smsNotif"> 簡訊通知
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦工作頁面 -->
+                <div id="jobs-tab" class="tab-panel" style="display: none;">
+                    <div class="form-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h3>💼 推薦工作 (<span id="jobsCount">0</span>)</h3>
+                            <div style="font-size: 0.875rem; color: #6b7280;">
+                                最後更新: <span id="lastUpdate">--:--:--</span>
+                            </div>
+                        </div>
+
+                        <div id="jobsList">
+                            <div class="empty-state">
+                                <div class="empty-icon">💼</div>
+                                <p>尚未找到符合條件的工作</p>
+                                <p style="font-size: 0.875rem;">請啟動機器人開始自動搜尋</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 通知頁面 -->
+                <div id="notifications-tab" class="tab-panel" style="display: none;">
+                    <div class="form-section">
+                        <h3>🔔 通知記錄 (<span id="notificationsCount">0</span>)</h3>
+
+                        <div id="notificationsList">
+                            <div class="empty-state">
+                                <div class="empty-icon">🔔</div>
+                                <p>尚無通知記錄</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⏰</div>
+                <h4 class="feature-title">24/7 自動搜尋</h4>
+                <p class="feature-desc">定時自動搜尋最新職缺</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h4 class="feature-title">智能匹配</h4>
+                <p class="feature-desc">AI分析匹配度，精準推薦</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h4 class="feature-title">即時通知</h4>
+                <p class="feature-desc">多管道通知，不錯過機會</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h4 class="feature-title">數據分析</h4>
+                <p class="feature-desc">求職趨勢與薪資分析</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全域狀態管理
+        let isAutomationActive = false;
+        let matchedJobs = [];
+        let notifications = [];
+        let skills = ['JavaScript', 'React', 'Node.js', 'Python'];
+        let keywords = ['React 開發', '前端工程師', 'JavaScript'];
+        let locations = ['台北', '新竹', '遠端'];
+        let automationInterval = null;
+
+        // 模擬工作數據
+        const sampleJobs = [
+            {
+                id: 1,
+                title: 'Senior React Developer',
+                company: 'TechCorp Taiwan',
+                location: '台北市信義區',
+                salary: '80K - 120K',
+                type: '全職',
+                remote: true,
+                matchScore: 95,
+                postedDate: new Date(Date.now() - 2 * 60 * 60 * 1000),
+                description: '尋找有經驗的React開發者，負責前端架構設計...',
+                requirements: ['React', 'TypeScript', '3年以上經驗'],
+                benefits: ['股票選擇權', '彈性工時', '遠端工作'],
+                source: 'LinkedIn',
+                url: 'https://linkedin.com/jobs/123'
+            },
+            {
+                id: 2,
+                title: '前端工程師 (React)',
+                company: '新創科技股份有限公司',
+                location: '新竹科學園區',
+                salary: '65K - 90K',
+                type: '全職',
+                remote: false,
+                matchScore: 88,
+                postedDate: new Date(Date.now() - 4 * 60 * 60 * 1000),
+                description: '加入我們的團隊，開發創新的Web應用程式...',
+                requirements: ['React', 'JavaScript', 'Git'],
+                benefits: ['年終獎金', '教育訓練', '團隊旅遊'],
+                source: '104人力銀行',
+                url: 'https://104.com.tw/job/123'
+            },
+            {
+                id: 3,
+                title: 'Full Stack Engineer',
+                company: 'Global Tech Solutions',
+                location: '台北市 (遠端工作)',
+                salary: '90K - 140K',
+                type: '全職',
+                remote: true,
+                matchScore: 92,
+                postedDate: new Date(Date.now() - 1 * 60 * 60 * 1000),
+                description: '尋找能獨立作業的全端工程師...',
+                requirements: ['React', 'Node.js', 'MongoDB', '英文流利'],
+                benefits: ['遠端工作', '彈性時間', '國際團隊'],
+                source: 'Indeed',
+                url: 'https://indeed.com/job/123'
+            }
+        ];
+
+        // Tab 切換功能
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                switchTab(tabId);
+            });
+        });
+
+        function switchTab(tabId) {
+            // 移除所有 active 狀態
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+
+            // 添加 active 狀態
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}-tab`).style.display = 'block';
+        }
+
+        // 區域按鈕切換
+        document.querySelectorAll('.region-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // 技能管理
+        function addSkill(event) {
+            if (event.key === 'Enter' && event.target.value.trim()) {
+                const skill = event.target.value.trim();
+                if (!skills.includes(skill)) {
+                    skills.push(skill);
+                    updateSkillsTags();
+                }
+                event.target.value = '';
+            }
+        }
+
+        function removeSkill(skill) {
+            skills = skills.filter(s => s !== skill);
+            updateSkillsTags();
+        }
+
+        function updateSkillsTags() {
+            const container = document.getElementById('skillsTags');
+            container.innerHTML = skills.map(skill => 
+                `<span class="tag">${skill} <span class="tag-remove" onclick="removeSkill('${skill}')">×</span></span>`
+            ).join('');
+        }
+
+        // 關鍵字管理
+        function addKeyword(event) {
+            if (event.key === 'Enter' && event.target.value.trim()) {
+                const keyword = event.target.value.trim();
+                if (!keywords.includes(keyword)) {
+                    keywords.push(keyword);
+                    updateKeywordsTags();
+                }
+                event.target.value = '';
+            }
+        }
+
+        function removeKeyword(keyword) {
+            keywords = keywords.filter(k => k !== keyword);
+            updateKeywordsTags();
+        }
+
+        function updateKeywordsTags() {
+            const container = document.getElementById('keywordsTags');
+            container.innerHTML = keywords.map(keyword => 
+                `<span class="tag">${keyword} <span class="tag-remove" onclick="removeKeyword('${keyword}')">×</span></span>`
+            ).join('');
+        }
+
+        // 地點管理
+        function addLocation(event) {
+            if (event.key === 'Enter' && event.target.value.trim()) {
+                const location = event.target.value.trim();
+                if (!locations.includes(location)) {
+                    locations.push(location);
+                    updateLocationsTags();
+                }
+                event.target.value = '';
+            }
+        }
+
+        function removeLocation(location) {
+            locations = locations.filter(l => l !== location);
+            updateLocationsTags();
+        }
+
+        function updateLocationsTags() {
+            const container = document.getElementById('locationsTags');
+            container.innerHTML = locations.map(location => 
+                `<span class="tag">${location} <span class="tag-remove" onclick="removeLocation('${location}')">×</span></span>`
+            ).join('');
+        }
+
+        // 匹配分數更新
+        function updateMatchScore() {
+            const value = document.getElementById('matchScore').value;
+            document.getElementById('matchScoreValue').textContent = value + '%';
+        }
+
+        // 自動化控制
+        function startAutomation() {
+            isAutomationActive = true;
+            
+            // 更新UI
+            document.getElementById('botStatus').textContent = '運行中';
+            document.getElementById('botStatus').className = 'status-indicator status-active';
+            document.getElementById('startBot').style.display = 'none';
+            document.getElementById('stopBot').style.display = 'inline-flex';
+            document.getElementById('statusBanner').classList.add('active');
+
+            // 立即搜尋一次
+            searchJobs();
+
+            // 設定定期搜尋
+            const frequency = document.getElementById('searchFrequency').value;
+            let interval = 30000; // 30秒 (模擬用)
+            
+            if (frequency === 'hourly') interval = 60000; // 1分鐘 (模擬用)
+            if (frequency === 'daily') interval = 120000; // 2分鐘 (模擬用)
+            if (frequency === 'weekly') interval = 300000; // 5分鐘 (模擬用)
+
+            automationInterval = setInterval(searchJobs, interval);
+
+            addNotification('system', '🤖 機器人已啟動', '開始自動搜尋符合條件的工作機會');
+        }
+
+        function stopAutomation() {
+            isAutomationActive = false;
+            
+            // 更新UI
+            document.getElementById('botStatus').textContent = '已停止';
+            document.getElementById('botStatus').className = 'status-indicator status-inactive';
+            document.getElementById('startBot').style.display = 'inline-flex';
+            document.getElementById('stopBot').style.display = 'none';
+            document.getElementById('statusBanner').classList.remove('active');
+
+            // 清除定時器
+            if (automationInterval) {
+                clearInterval(automationInterval);
+                automationInterval = null;
+            }
+
+            addNotification('system', '⏸️ 機器人已停止', '自動搜尋功能已暫停');
+        }
+
+        // 搜尋工作
+        function searchJobs() {
+            const minScore = parseInt(document.getElementById('matchScore').value);
+            const maxJobs = parseInt(document.getElementById('maxJobs').value);
+
+            // 模擬搜尋 - 隨機選擇工作
+            const availableJobs = sampleJobs.filter(job => job.matchScore >= minScore);
+            const newJobs = availableJobs.slice(0, maxJobs);
+
+            // 添加新工作到列表
+            newJobs.forEach(job => {
+                const existingJob = matchedJobs.find(j => j.id === job.id);
+                if (!existingJob) {
+                    matchedJobs.unshift({
+                        ...job,
+                        id: Date.now() + Math.random(),
+                        postedDate: new Date()
+                    });
+                }
+            });
+
+            // 限制總數
+            matchedJobs = matchedJobs.slice(0, maxJobs);
+
+            updateJobsList();
+            updateLastUpdate();
+
+            if (newJobs.length > 0) {
+                addNotification('jobs_found', `🔥 發現 ${newJobs.length} 個新工作機會！`, 
+                    `根據你的設定找到了 ${newJobs.length} 個匹配度超過 ${minScore}% 的職缺`);
+            }
+        }
+
+        // 更新工作列表
+        function updateJobsList() {
+            const container = document.getElementById('jobsList');
+            document.getElementById('jobsCount').textContent = matchedJobs.length;
+
+            if (matchedJobs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💼</div>
+                        <p>尚未找到符合條件的工作</p>
+                        <p style="font-size: 0.875rem;">請啟動機器人開始自動搜尋</p>
+                    </div>
+                `;
+                document.getElementById('jobsBadge').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('jobsBadge').textContent = matchedJobs.length;
+            document.getElementById('jobsBadge').style.display = 'flex';
+
+            container.innerHTML = matchedJobs.map(job => {
+                const matchClass = job.matchScore >= 90 ? 'match-high' : 
+                                  job.matchScore >= 80 ? 'match-medium' : 'match-low';
+                
+                return `
+                    <div class="job-card">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">${job.title}</div>
+                                <div class="job-company">${job.company}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="match-score ${matchClass}">匹配度 ${job.matchScore}%</div>
+                                <div style="font-size: 0.75rem; color: #6b7280; margin-top: 4px;">
+                                    ${job.postedDate.toLocaleString('zh-TW')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="job-details">
+                            <span>📍 ${job.location}</span>
+                            <span>💰 ${job.salary}</span>
+                            <span>⏰ ${job.type}</span>
+                            ${job.remote ? '<span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">遠端工作</span>' : ''}
+                        </div>
+
+                        <div style="color: #374151; margin-bottom: 12px; font-size: 0.875rem;">
+                            ${job.description}
+                        </div>
+
+                        <div class="job-tags">
+                            ${job.requirements.map(req => `<span class="job-tag">${req}</span>`).join('')}
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                            <div style="font-size: 0.875rem; color: #6b7280;">
+                                來源: ${job.source}
+                            </div>
+                            <div class="job-actions">
+                                <button class="btn btn-primary" onclick="saveJob(${job.id})">收藏</button>
+                                <a href="${job.url}" target="_blank" class="btn btn-success">申請 🔗</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 添加通知
+        function addNotification(type, title, message) {
+            const notification = {
+                id: Date.now(),
+                type: type,
+                title: title,
+                message: message,
+                timestamp: new Date()
+            };
+
+            notifications.unshift(notification);
+            notifications = notifications.slice(0, 20); // 限制通知數量
+
+            updateNotificationsList();
+        }
+
+        // 更新通知列表
+        function updateNotificationsList() {
+            const container = document.getElementById('notificationsList');
+            document.getElementById('notificationsCount').textContent = notifications.length;
+
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔔</div>
+                        <p>尚無通知記錄</p>
+                    </div>
+                `;
+                document.getElementById('notificationsBadge').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('notificationsBadge').textContent = notifications.length;
+            document.getElementById('notificationsBadge').style.display = 'flex';
+
+            container.innerHTML = notifications.map(notif => `
+                <div class="notification-item">
+                    <div class="notification-header">
+                        <div class="notification-title">${notif.title}</div>
+                        <div class="notification-time">${notif.timestamp.toLocaleTimeString('zh-TW')}</div>
+                    </div>
+                    <div class="notification-message">${notif.message}</div>
+                </div>
+            `).join('');
+        }
+
+        // 更新最後更新時間
+        function updateLastUpdate() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('zh-TW');
+        }
+
+        // 工作相關操作
+        function saveJob(jobId) {
+            alert('工作已收藏！\n(在實際版本中會儲存到個人收藏列表)');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSkillsTags();
+            updateKeywordsTags();
+            updateLocationsTags();
+            updateLastUpdate();
+            
+            // 歡迎通知
+            addNotification('welcome', '👋 歡迎使用AI求職機器人！', '請設定個人資料和搜尋偏好，然後啟動自動化功能開始找工作');
+        });
+
+        // PWA 安裝提示
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // 可以在這裡顯示安裝按鈕
+            console.log('PWA 可以安裝');
+        });
+    </script>
+</body>
+</html>
