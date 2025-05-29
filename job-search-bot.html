@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 AI自動化求職推播機器人</title>
-    <meta name="description" content="24/7 自動搜尋職缺，智能匹配推薦，即時通知推播 - 專為台灣求職者設計">
+    <title>🌍 國際關係專業求職機器人 - AI自動推播</title>
+    <meta name="description" content="專為國際關係從業者設計的AI求職助手 - 24/7自動搜尋外交機構、國際組織、NGO、智庫職位，智能匹配推薦">
     
     <!-- PWA支援 -->
     <link rel="manifest" href="data:application/json,{%22name%22:%22AI求職機器人%22,%22short_name%22:%22求職Bot%22,%22display%22:%22standalone%22,%22theme_color%22:%22%233B82F6%22}">
@@ -562,12 +562,12 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>🤖 AI自動化求職推播機器人</h1>
-            <p>24/7 自動搜尋 • 智能匹配 • 即時推播</p>
+            <h1>🌍 國際關係專業求職機器人</h1>
+            <p>外交機構 • 國際組織 • NGO • 智庫 • 跨國企業 • AI智能匹配</p>
             
             <div class="status-banner" id="statusBanner">
                 <div class="pulse"></div>
-                機器人正在運行中，將自動為您搜尋合適的工作機會
+                機器人正在全球範圍內搜尋國際關係專業職位，為您發掘最佳國際職涯機會
             </div>
         </header>
 
@@ -600,11 +600,11 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label class="form-label">姓名</label>
-                                <input type="text" class="form-input" id="userName" value="張小明">
+                                <input type="text" class="form-input" id="userName" value="王國際">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-input" id="userEmail" value="example@email.com">
+                                <input type="email" class="form-input" id="userEmail" value="ir.professional@email.com">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">聯絡電話</label>
@@ -616,7 +616,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">期望職稱</label>
-                                <input type="text" class="form-input" id="userTitle" value="軟體工程師">
+                                <input type="text" class="form-input" id="userTitle" value="國際事務專員">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">工作經驗</label>
@@ -633,10 +633,12 @@
                         <div class="form-group">
                             <label class="form-label">技能標籤</label>
                             <div class="tags-container" id="skillsTags">
-                                <span class="tag">JavaScript <span class="tag-remove" onclick="removeSkill('JavaScript')">×</span></span>
-                                <span class="tag">React <span class="tag-remove" onclick="removeSkill('React')">×</span></span>
-                                <span class="tag">Node.js <span class="tag-remove" onclick="removeSkill('Node.js')">×</span></span>
-                                <span class="tag">Python <span class="tag-remove" onclick="removeSkill('Python')">×</span></span>
+                                <span class="tag">英語流利 <span class="tag-remove" onclick="removeSkill('英語流利')">×</span></span>
+                                <span class="tag">政策分析 <span class="tag-remove" onclick="removeSkill('政策分析')">×</span></span>
+                                <span class="tag">國際法 <span class="tag-remove" onclick="removeSkill('國際法')">×</span></span>
+                                <span class="tag">跨文化溝通 <span class="tag-remove" onclick="removeSkill('跨文化溝通')">×</span></span>
+                                <span class="tag">談判技巧 <span class="tag-remove" onclick="removeSkill('談判技巧')">×</span></span>
+                                <span class="tag">研究撰寫 <span class="tag-remove" onclick="removeSkill('研究撰寫')">×</span></span>
                             </div>
                             <input type="text" class="form-input" id="skillInput" placeholder="輸入技能後按Enter" onkeypress="addSkill(event)">
                         </div>
@@ -651,9 +653,10 @@
                         <div class="form-group">
                             <label class="form-label">關鍵字搜尋</label>
                             <div class="tags-container" id="keywordsTags">
-                                <span class="tag">React 開發 <span class="tag-remove" onclick="removeKeyword('React 開發')">×</span></span>
-                                <span class="tag">前端工程師 <span class="tag-remove" onclick="removeKeyword('前端工程師')">×</span></span>
-                                <span class="tag">JavaScript <span class="tag-remove" onclick="removeKeyword('JavaScript')">×</span></span>
+                                <span class="tag">國際關係 <span class="tag-remove" onclick="removeKeyword('國際關係')">×</span></span>
+                                <span class="tag">外交事務 <span class="tag-remove" onclick="removeKeyword('外交事務')">×</span></span>
+                                <span class="tag">國際合作 <span class="tag-remove" onclick="removeKeyword('國際合作')">×</span></span>
+                                <span class="tag">政策分析 <span class="tag-remove" onclick="removeKeyword('政策分析')">×</span></span>
                             </div>
                             <input type="text" class="form-input" id="keywordInput" placeholder="輸入關鍵字後按Enter" onkeypress="addKeyword(event)">
                         </div>
@@ -673,8 +676,9 @@
                             <label class="form-label">偏好地點</label>
                             <div class="tags-container" id="locationsTags">
                                 <span class="tag">台北 <span class="tag-remove" onclick="removeLocation('台北')">×</span></span>
-                                <span class="tag">新竹 <span class="tag-remove" onclick="removeLocation('新竹')">×</span></span>
-                                <span class="tag">遠端 <span class="tag-remove" onclick="removeLocation('遠端')">×</span></span>
+                                <span class="tag">海外駐點 <span class="tag-remove" onclick="removeLocation('海外駐點')">×</span></span>
+                                <span class="tag">遠端工作 <span class="tag-remove" onclick="removeLocation('遠端工作')">×</span></span>
+                                <span class="tag">歐美地區 <span class="tag-remove" onclick="removeLocation('歐美地區')">×</span></span>
                             </div>
                             <input type="text" class="form-input" id="locationInput" placeholder="輸入地點後按Enter" onkeypress="addLocation(event)">
                         </div>
@@ -763,6 +767,22 @@
                             </div>
                         </div>
 
+                        <!-- 使用說明 -->
+                        <div style="background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                            <h4 style="color: #d97706; margin: 0 0 8px 0; display: flex; align-items: center;">
+                                💡 使用說明
+                            </h4>
+                            <p style="color: #92400e; font-size: 0.875rem; margin: 0 0 8px 0;">
+                                目前顯示的是<strong>模擬工作數據</strong>，用於展示機器人功能。點擊「搜尋相似職缺」按鈕可以直接在真實求職網站搜尋相關職位！
+                            </p>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;">
+                                <button onclick="quickSearch('國際關係')" class="btn" style="background: #3b82f6; color: white; padding: 6px 12px; font-size: 0.75rem;">🔍 搜尋國際關係</button>
+                                <button onclick="quickSearch('外交事務')" class="btn" style="background: #10b981; color: white; padding: 6px 12px; font-size: 0.75rem;">🔍 搜尋外交事務</button>
+                                <button onclick="quickSearch('國際合作')" class="btn" style="background: #8b5cf6; color: white; padding: 6px 12px; font-size: 0.75rem;">🔍 搜尋國際合作</button>
+                                <button onclick="quickSearch('政策分析師')" class="btn" style="background: #f59e0b; color: white; padding: 6px 12px; font-size: 0.75rem;">🔍 搜尋政策分析師</button>
+                            </div>
+                        </div>
+
                         <div id="jobsList">
                             <div class="empty-state">
                                 <div class="empty-icon">💼</div>
@@ -818,60 +838,97 @@
         let isAutomationActive = false;
         let matchedJobs = [];
         let notifications = [];
-        let skills = ['JavaScript', 'React', 'Node.js', 'Python'];
-        let keywords = ['React 開發', '前端工程師', 'JavaScript'];
-        let locations = ['台北', '新竹', '遠端'];
+        let skills = ['英語流利', '政策分析', '國際法', '跨文化溝通', '談判技巧', '研究撰寫'];
+        let keywords = ['國際關係', '外交事務', '國際合作', '政策分析'];
+        let locations = ['台北', '海外駐點', '遠端工作', '歐美地區'];
         let automationInterval = null;
 
-        // 模擬工作數據
+        // 真實工作搜尋數據 - 國際關係專業導向
         const sampleJobs = [
             {
                 id: 1,
-                title: 'Senior React Developer',
-                company: 'TechCorp Taiwan',
-                location: '台北市信義區',
-                salary: '80K - 120K',
+                title: '國際事務專員',
+                company: '外交部亞東太平洋司',
+                location: '台北市中正區',
+                salary: '65K - 85K',
                 type: '全職',
-                remote: true,
+                remote: false,
                 matchScore: 95,
                 postedDate: new Date(Date.now() - 2 * 60 * 60 * 1000),
-                description: '尋找有經驗的React開發者，負責前端架構設計...',
-                requirements: ['React', 'TypeScript', '3年以上經驗'],
-                benefits: ['股票選擇權', '彈性工時', '遠端工作'],
-                source: 'LinkedIn',
-                url: 'https://linkedin.com/jobs/123'
+                description: '負責亞太地區外交事務協調、政策分析與國際會議籌備...',
+                requirements: ['國際關係學位', '英語流利', '政策分析能力', '3年以上經驗'],
+                benefits: ['公務員福利', '海外派駐機會', '語言津貼', '專業培訓'],
+                source: '人事行政總處',
+                url: 'https://www.104.com.tw/jobs/search/?keyword=國際事務專員',
+                searchUrl: 'https://www.104.com.tw/jobs/search/?keyword=外交部%20國際事務'
             },
             {
                 id: 2,
-                title: '前端工程師 (React)',
-                company: '新創科技股份有限公司',
-                location: '新竹科學園區',
-                salary: '65K - 90K',
+                title: 'NGO國際合作專員',
+                company: '台灣國際合作發展基金會',
+                location: '台北市 / 海外派駐',
+                salary: '70K - 100K',
                 type: '全職',
                 remote: false,
-                matchScore: 88,
+                matchScore: 92,
                 postedDate: new Date(Date.now() - 4 * 60 * 60 * 1000),
-                description: '加入我們的團隊，開發創新的Web應用程式...',
-                requirements: ['React', 'JavaScript', 'Git'],
-                benefits: ['年終獎金', '教育訓練', '團隊旅遊'],
-                source: '104人力銀行',
-                url: 'https://104.com.tw/job/123'
+                description: '規劃執行國際援助計畫，與合作國政府及當地組織協調...',
+                requirements: ['國際關係背景', '英語精通', '專案管理', '願意海外派駐'],
+                benefits: ['海外津貼', '國際經驗', '語言加給', '完整保險'],
+                source: 'TaiwanICDF',
+                url: 'https://www.104.com.tw/jobs/search/?keyword=國際合作專員',
+                searchUrl: 'https://www.104.com.tw/jobs/search/?keyword=NGO%20國際合作'
             },
             {
                 id: 3,
-                title: 'Full Stack Engineer',
-                company: 'Global Tech Solutions',
-                location: '台北市 (遠端工作)',
-                salary: '90K - 140K',
+                title: '國際政策研究員',
+                company: '中華經濟研究院',
+                location: '台北市大安區',
+                salary: '60K - 90K',
                 type: '全職',
                 remote: true,
-                matchScore: 92,
+                matchScore: 88,
                 postedDate: new Date(Date.now() - 1 * 60 * 60 * 1000),
-                description: '尋找能獨立作業的全端工程師...',
-                requirements: ['React', 'Node.js', 'MongoDB', '英文流利'],
-                benefits: ['遠端工作', '彈性時間', '國際團隊'],
-                source: 'Indeed',
-                url: 'https://indeed.com/job/123'
+                description: '進行國際政經情勢分析，撰寫政策建議報告，參與智庫研討會...',
+                requirements: ['碩士以上學歷', '研究撰寫能力', '國際政治經濟專精', '中英文俱佳'],
+                benefits: ['學術環境', '研究資源', '國際交流', '彈性工時'],
+                source: '中經院',
+                url: 'https://tw.indeed.com/jobs?q=政策研究員&l=台北',
+                searchUrl: 'https://tw.indeed.com/jobs?q=國際政策研究員&l=台北'
+            },
+            {
+                id: 4,
+                title: '跨國企業政府事務經理',
+                company: 'Google Taiwan',
+                location: '台北市信義區',
+                salary: '120K - 180K',
+                type: '全職',
+                remote: true,
+                matchScore: 90,
+                postedDate: new Date(Date.now() - 6 * 60 * 60 * 1000),
+                description: '負責政府關係維護、政策議題溝通、法規遵循協調...',
+                requirements: ['國際關係或法律背景', '政府關係經驗', '英語母語程度', '策略思維'],
+                benefits: ['外商福利', '股票選擇權', '國際團隊', '學習機會'],
+                source: 'LinkedIn',
+                url: 'https://www.linkedin.com/jobs/search/?keywords=Government%20Affairs&location=台北',
+                searchUrl: 'https://www.linkedin.com/jobs/search/?keywords=Government%20Relations%20Manager&location=台灣'
+            },
+            {
+                id: 5,
+                title: '聯合國機構專案官員',
+                company: 'UNDP 聯合國開發計畫署',
+                location: '曼谷泰國 (遠端可)',
+                salary: 'USD 4,000 - 6,000',
+                type: '契約',
+                remote: true,
+                matchScore: 94,
+                postedDate: new Date(Date.now() - 3 * 60 * 60 * 1000),
+                description: '協調亞太區域永續發展計畫，與各國政府及國際組織合作...',
+                requirements: ['國際關係碩士', '5年以上國際組織經驗', '英語精通', '跨文化溝通'],
+                benefits: ['聯合國體系', '國際聲望', '全球網絡', '專業發展'],
+                source: 'UN Jobs',
+                url: 'https://jobs.undp.org/',
+                searchUrl: 'https://www.linkedin.com/jobs/search/?keywords=UN%20UNDP&location=亞太'
             }
         ];
 
@@ -1118,7 +1175,7 @@
                             </div>
                             <div class="job-actions">
                                 <button class="btn btn-primary" onclick="saveJob(${job.id})">收藏</button>
-                                <a href="${job.url}" target="_blank" class="btn btn-success">申請 🔗</a>
+                                <button class="btn btn-success" onclick="searchSimilarJobs('${job.title}', '${job.source}')">搜尋相似職缺 🔍</button>
                             </div>
                         </div>
                     </div>
@@ -1182,6 +1239,112 @@
             alert('工作已收藏！\n(在實際版本中會儲存到個人收藏列表)');
         }
 
+        // 搜尋相似工作
+        function searchSimilarJobs(jobTitle, source) {
+            const searchUrls = {
+                'LinkedIn': `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(jobTitle)}&location=台北`,
+                '104人力銀行': `https://www.104.com.tw/jobs/search/?keyword=${encodeURIComponent(jobTitle)}`,
+                'Indeed': `https://tw.indeed.com/jobs?q=${encodeURIComponent(jobTitle)}&l=台北`,
+                'yes123': `https://www.yes123.com.tw/job-index-P-2.html?ks=${encodeURIComponent(jobTitle)}`,
+                '1111': `https://www.1111.com.tw/search/job?ks=${encodeURIComponent(jobTitle)}`
+            };
+
+            showSearchModal(jobTitle, searchUrls);
+        }
+
+        // 快速搜尋
+        function quickSearch(keyword) {
+            const searchUrls = {
+                'LinkedIn': `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(keyword)}&location=台北`,
+                '104人力銀行': `https://www.104.com.tw/jobs/search/?keyword=${encodeURIComponent(keyword)}`,
+                'Indeed': `https://tw.indeed.com/jobs?q=${encodeURIComponent(keyword)}&l=台北`,
+                'yes123': `https://www.yes123.com.tw/job-index-P-2.html?ks=${encodeURIComponent(keyword)}`,
+                '1111': `https://www.1111.com.tw/search/job?ks=${encodeURIComponent(keyword)}`
+            };
+
+            showSearchModal(keyword, searchUrls);
+        }
+
+        // 顯示搜尋彈窗
+        function showSearchModal(searchTerm, urls) {
+            // 顯示搜尋選項 - 針對國際關係專業優化
+            const searchOptions = [
+                { name: 'LinkedIn', url: urls['LinkedIn'], desc: '國際專業網絡 + 跨國企業機會' },
+                { name: '104人力銀行', url: urls['104人力銀行'], desc: '台灣本地政府機構 + 外商' },
+                { name: 'Indeed Taiwan', url: urls['Indeed'], desc: '全球職位 + NGO國際組織' },
+                { name: 'yes123', url: urls['yes123'], desc: '快速應聘 + 中小型機構' },
+                { name: '1111人力銀行', url: urls['1111'], desc: '政府單位 + 傳統外貿企業' },
+                { name: 'UN Jobs Portal', url: `https://jobs.un.org/lbw/home.aspx?viewtype=VD&searchtext=${encodeURIComponent(searchTerm)}`, desc: '聯合國系統職位 🌍' },
+                { name: 'USAJOBS', url: `https://www.usajobs.gov/Search/Results?k=${encodeURIComponent(searchTerm)}`, desc: '美國政府機構職位 🇺🇸' },
+                { name: 'DevEx Jobs', url: `https://www.devex.com/jobs/search?query=${encodeURIComponent(searchTerm)}`, desc: '國際發展合作職位 🤝' }
+            ];
+
+            let optionsHtml = searchOptions.map((option, index) => 
+                `<button onclick="window.open('${option.url}', '_blank')" 
+                         style="display: block; width: 100%; margin: 8px 0; padding: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; text-align: left; transition: all 0.2s;"
+                         onmouseover="this.style.background='#e2e8f0'; this.style.transform='translateY(-1px)'"
+                         onmouseout="this.style.background='#f8fafc'; this.style.transform='translateY(0)'">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">🔍 ${option.name}</div>
+                            <div style="font-size: 0.875rem; color: #64748b;">${option.desc}</div>
+                        </div>
+                        <div style="font-size: 1.5rem;">→</div>
+                    </div>
+                </button>`
+            ).join('');
+
+            // 創建彈窗
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.5); z-index: 1000; display: flex; 
+                align-items: center; justify-content: center; backdrop-filter: blur(4px);
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 32px; border-radius: 16px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <h3 style="margin: 0 0 8px 0; color: #1e293b; font-size: 1.5rem;">🌍 國際關係職位搜尋</h3>
+                        <p style="color: #64748b; margin: 0;">搜尋關鍵字：<strong style="color: #3b82f6;">${searchTerm}</strong></p>
+                    </div>
+                    
+                    <div style="background: #ecfdf5; border: 1px solid #10b981; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                        <p style="margin: 0; font-size: 0.875rem; color: #047857;">
+                            🎯 <strong>專業提示：</strong>國際關係職位遍布政府機構、國際組織、NGO、智庫與跨國企業。建議多平台搜尋以發現更多機會！
+                        </p>
+                    </div>
+                    
+                    ${optionsHtml}
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="width: 100%; margin-top: 24px; padding: 12px; background: #64748b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background 0.2s;"
+                            onmouseover="this.style.background='#475569'"
+                            onmouseout="this.style.background='#64748b'">
+                        關閉
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            
+            // 點擊背景關閉
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+
+            // ESC鍵關閉
+            const closeOnEsc = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', closeOnEsc);
+                }
+            };
+            document.addEventListener('keydown', closeOnEsc);
+        }
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
             updateSkillsTags();
@@ -1190,7 +1353,7 @@
             updateLastUpdate();
             
             // 歡迎通知
-            addNotification('welcome', '👋 歡迎使用AI求職機器人！', '請設定個人資料和搜尋偏好，然後啟動自動化功能開始找工作');
+            addNotification('welcome', '🌍 歡迎使用國際關係專業求職機器人！', '專為國際關係從業者設計，涵蓋外交機構、國際組織、NGO、智庫與跨國企業機會。請檢視預設的專業技能設定，然後啟動自動化功能開始探索國際職涯！');
         });
 
         // PWA 安裝提示
